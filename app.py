@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 
 # -------------------------- 全局页面配置 --------------------------
-st.set_page_config(page_title="科林劳动争议风险评估器（HR内部使用）", layout="wide")
+st.set_page_config(page_title="CLINICO 科林劳动争议风险评估器（HR内部使用）", layout="wide")
 # 科林品牌色
 COLOR_MAIN = "#F5B800"
 COLOR_RED = "#C53030"
@@ -146,8 +146,8 @@ def reset_all():
     st.session_state.evidence_selections = {}
     st.session_state.calc_result = None
 
-# -------------------------- 页面标题与底部版权 --------------------------
-st.markdown(f"<h2 style='color:{COLOR_MAIN};'>CLINCO 科林劳动争议风险评估器（HR内部使用）</h2>", unsafe_allow_html=True)
+# -------------------------- 页面标题与底部版权（已修正CLINICO） --------------------------
+st.markdown(f"<h2 style='color:{COLOR_MAIN};'>CLINICO 科林劳动争议风险评估器（HR内部使用）</h2>", unsafe_allow_html=True)
 st.markdown("<div style='text-align:right;color:#999999;'>创作权：李超Eddie</div>", unsafe_allow_html=True)
 st.divider()
 
@@ -317,7 +317,7 @@ elif st.session_state.current_step == 3:
     # 导出TXT报告函数
     def build_report_text():
         report = f"""{'='*62}
-              科林劳动争议风险评估器 诊断报告
+              CLINICO 科林劳动争议风险评估器 诊断报告
               生成时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 {'='*62}
 
