@@ -1,7 +1,10 @@
 import streamlit as st
 from datetime import datetime
 
-# -------------------------- 全局页面配置 --------------------------
+# -------------------------- 访问权限配置（可通行密码列表） --------------------------
+ALLOW_PWD_LIST = ["3713", "4441", "3220", "402X", "4041", "3668", "0222"]
+
+# -------------------------- 全局页面基础配置 --------------------------
 st.set_page_config(page_title="CLINICO 科林劳动争议风险评估器（HR内部使用）", layout="wide")
 # 科林品牌色
 COLOR_MAIN = "#F5B800"
@@ -9,10 +12,31 @@ COLOR_RED = "#C53030"
 COLOR_GREEN = "#2F855A"
 COLOR_WARN = "#d69e2e"
 
-# 初始化页面状态（默认停在第一步）
+# 登录状态缓存
+if "login_passed" not in st.session_state:
+    st.session_state.login_passed = False
+
+# -------------------------- 登录密码校验页面（优先加载） --------------------------
+if not st.session_state.login_passed:
+    st.markdown(f"<h2 style='color:{COLOR_MAIN};text-align:center;'>CLINICO 科林劳动争议风险评估器</h2>", unsafe_allow_html=True)
+    st.divider()
+    st.warning("⚠️ 本工具仅限公司内部HR使用，禁止转发链接与密码给外部人员")
+    st.info("登录密码为本人身份证号码后4位，无权限请联系管理员")
+    
+    input_pwd = st.text_input("请输入访问密码", type="password", placeholder="输入身份证后4位")
+    login_btn = st.button("验证并进入工具", type="primary", use_container_width=True)
+    
+    if login_btn:
+        if input_pwd in ALLOW_PWD_LIST:
+            st.session_state.login_passed = True
+            st.rerun()
+        else:
+            st.error("密码错误，无访问权限，请核对后重新输入")
+    st.stop()  # 密码错误直接终止，不加载工具主体内容
+
+# -------------------------- 工具页面状态初始化 --------------------------
 if "current_step" not in st.session_state:
     st.session_state.current_step = 1
-# 存储所有填写数据
 if "case_data" not in st.session_state:
     st.session_state.case_data = {}
 if "evidence_selections" not in st.session_state:
@@ -20,7 +44,7 @@ if "evidence_selections" not in st.session_state:
 if "calc_result" not in st.session_state:
     st.session_state.calc_result = None
 
-# -------------------------- 固定业务规则（和本地软件1:1复制） --------------------------
+# -------------------------- 固定业务规则（与本地桌面软件1:1复刻） --------------------------
 province_risk_map = {
     "北京": "北京", "上海": "上海",
     "广东": "其他高风险", "江苏": "其他高风险", "浙江": "其他高风险",
@@ -65,7 +89,7 @@ evidence_rules = {
     ]
 }
 
-# -------------------------- 核心计算函数（和本地软件完全一致） --------------------------
+# -------------------------- 核心计算逻辑（与本地软件完全一致） --------------------------
 def calculate_result():
     data = st.session_state.case_data
     choices = st.session_state.evidence_selections
@@ -146,7 +170,7 @@ def reset_all():
     st.session_state.evidence_selections = {}
     st.session_state.calc_result = None
 
-# -------------------------- 页面标题与底部版权（已修正CLINICO） --------------------------
+# -------------------------- 页面顶部标题与底部版权 --------------------------
 st.markdown(f"<h2 style='color:{COLOR_MAIN};'>CLINICO 科林劳动争议风险评估器（HR内部使用）</h2>", unsafe_allow_html=True)
 st.markdown("<div style='text-align:right;color:#999999;'>创作权：李超Eddie</div>", unsafe_allow_html=True)
 st.divider()
